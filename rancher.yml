@@ -1,0 +1,21 @@
+# to dig and write
+Port 8080 ouvert sur dkr01
+API key rancheradmin présente & conforme
+Scripts /opt/rancher-scripts (secrets, haproxy) présents
+Backups
+  Fonctionnent ? => il existe un fichier de backup <24H
+  => faire un backup à la fin de l’install du rancher-master
+MySQL/MariaDB
+  Accessible 3306
+  Option “max_big_item_size” assez grande
+  Binlog disabled
+  Innodb max_buffer_size 
+Port 80 open sur chaque hôte (tous les hosts sauf master)
+Registry correctement configuré
+LDAP correctement configuré (à confirmer)
+Groups/Users ayant accès aux environments ?
+Les environments voulus existent (appel API)
+Stack rancher-secrets existe (script)
+Stack tools existe sur chaque environment (script)
+Stacks infrastructure up to date (script)
+Stacks infrastructure Healthy (script)
