@@ -1,0 +1,11 @@
+# to dig
+Partition size of docker-lv
+  Cron btrfs rebalance exists
+  Version running kernel
+  Sysctl : ip_forward
+  /var/run/docker.sock == file
+  docker info
+    logging driver
+    cgroup driver
+    storage driver(s)
+    Version (server/client)
