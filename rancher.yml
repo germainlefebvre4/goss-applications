@@ -19,3 +19,42 @@ Stack rancher-secrets existe (script)
 Stack tools existe sur chaque environment (script)
 Stacks infrastructure up to date (script)
 Stacks infrastructure Healthy (script)
+
+# Draft
+# Rancher Port
+tcp://{{ groups['rancher-master][0] }}:8080
+  reachable: true
+  timeout: 500
+
+
+# Rancher
+# Rancher GUI
+http:
+  http://{{ groups['rancher-master][0] }}:8080/
+  status: 200
+  allow-insecure: true
+  timeout: 1000
+  username: "rancher-admin"
+  password: "{{ rancher_admin_password }}"
+
+# Rancher Environments
+{% for env_name in rancher_env.keys() %}
+http:
+  http://{{ groups['rancher-master][0] }}:8080/projects?name={{ env_name }}
+  status: 200
+  allow-insecure: true
+  timeout: 1000
+  username: "rancher-admin"
+  password: "{{ rancher_admin_password }}"
+{% endfor %}
+
+# Rancher API Key
+{% for env_name in rancher_env.keys() %}
+http:
+  http://{{ groups['rancher-master][0] }}:8080/apikeys?name=deployer
+  status: 200
+  allow-insecure: true
+  timeout: 1000
+  username: "rancher-admin"
+  password: "{{ rancher_admin_password }}"
+{% endfor %}
