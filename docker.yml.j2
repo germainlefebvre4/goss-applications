@@ -1,0 +1,42 @@
+# to dig
+Partition size of docker-lv
+Cron btrfs rebalance exists
+Version running kernel
+Sysctl : ip_forward
+/var/run/docker.sock == file
+docker info
+  logging driver
+  cgroup driver
+  storage driver(s)
+  Version (server/client)
+
+# Draft
+file:
+  /etc/sysctl.conf
+    exists: true
+	contains:
+{% if inventory_hostname in groups['rancher-master'] %}
+	- /net.ipv4.ip_forward = 0/
+{% else %}
+	- /net.ipv4.ip_forward = 1/
+{% endif %}
+
+service:
+  docker:
+    enabled: true
+    running: true
+file:
+  /var/run/docker.pid
+    exists: true
+	filetype: file
+  /var/run/docker.sock
+    exists: true
+	filetype: file
+command:
+  docker info:
+    exit-status: 0
+	stdout:
+	- /Server Version: {{ docker_version }}/
+	- /Storage Driver: btrfs/
+	- /Logging Driver: json-file/
+	- /Cgroup Driver: cgroupfs/
