@@ -3,11 +3,11 @@ service:
     enabled: true
     running: true
 user:
-  {{ kafka_user }}:
+  kafka:
     exists: true
     uid: 513
     groups:
-    - {{ kafka_user }}
+    - kafka
     home: /home/kafka
 port:
   tcp:9090: # kafka jmx
@@ -15,14 +15,14 @@ port:
   tcp:9092: # kafka
     listening: true
 file:
-  /opt/jdk-{{ java_version.9 }}:
+  /opt/jdk-9.0.4:
     exists: true
     filetype: directory
   /opt/jdk9/bin/java:
     exists: true
     mode: "0755"
     filetype: file
-  /etc/security/limits.d/91-kafka.conf:
+  /etc/security/limits.d/99-kafka.conf:
     exists: true
     owner: root
     group: root
@@ -31,10 +31,12 @@ file:
   /etc/profile.d/kafka.sh:
     exists: true
     filetype: file
-    owner: {{ kafka_user }}
-    group: {{ kafka_user }}
+    owner: kafka
+    group: kafka
 kernel-param:
-{% for key, value in kafka_sysctl_rules.iteritems() %}
-  {{ key }}:
-    value: '{{ value }}'
-{% endfor %}
+  vm.swappiness:
+    value: '1'
+  vm.dirty_background_ratio:
+    value: '5'
+  vm.dirty_ratio:
+    value: '60'
