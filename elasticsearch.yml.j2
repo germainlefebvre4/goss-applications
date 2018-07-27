@@ -1,0 +1,49 @@
+port:
+  tcp:{{ elasticsearch_port }}:
+    listening: true
+package:
+  elasticsearch:
+    installed: true
+    versions:
+    - {{ elk_version }}
+service:
+  elasticsearch:
+    enabled: true
+    running: true
+file:
+  /etc/elasticsearch/jvm.options:
+    exists: true
+    contains:
+    - "/Xmx{{ (ansible_memtotal_mb / 2 ) | round(0,'common') | int }}m/"
+    - "/Xms{{ (ansible_memtotal_mb / 2 ) | round(0,'common') | int }}m/"
+  /etc/elasticsearch/elasticsearch.yml:
+    exists: true
+    contains:
+    - "node.name: {{ ansible_host | replace('a.','.') }}"
+    - "bootstrap.memory_lock: false"
+    - "network.host: 0.0.0.0"
+{% if groups['els-lightning'] is defined and inventory_hostname in groups['els-lightning'] %}
+    - "cluster.name: {{ elasticsearch_cluster_name }}"
+  /etc/httpd/conf.d/elasticsearch.conf:
+    exists: true
+    contains:
+    - "Listen 9200"
+    - '/^ *ProxyPass.*:{{ elasticsearch_port }}\/$/'
+{% endif %}
+  /etc/logrotate.d/elasticsearch.conf:
+    exists: true
+command:
+  "java -version 2>&1": # stdout is redirected in sterr... what's bad ?!
+    exit-status: 0
+    stdout:
+      - "1.8.0"
+{% if groups['els-lightning'] is defined and inventory_hostname in groups['els-lightning'] %}
+  "iptables -S":
+    exit-status: 0
+    stdout:
+      - "-A INPUT ! -i lo -p tcp -m tcp --dport {{ elasticsearch_port }} -j REJECT --reject-with icmp-port-unreachable"
+  "echo \"$(LANG=C fdisk -l | grep 'lv_els_data:' | awk -F', ' '{print $2}' | sed 's/ bytes//g') / (1024*1024*1024)\" | bc":
+    exit-status: 0
+    stdout:
+      - '/^([4-9][0-9]|\d{3})$/'
+{% endif %}
