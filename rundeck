@@ -1,0 +1,23 @@
+file:
+  /etc/rundeck/role.aclpolicy:
+    exists: true
+    filetype: file
+  /etc/rundeck/realm.properties:
+    exists: true
+    filetype: file
+    mode: "0644"
+    contains:
+    - "!/admin:admin/"
+http:
+  https://{{ ansible_hostname }}/:
+    status: 200
+    allow-insecure: true
+port:
+  tcp:4443:
+    listening: true
+  tcp:443:
+    listening: true
+service:
+  rundeckd:
+    enabled: true
+    running: true
