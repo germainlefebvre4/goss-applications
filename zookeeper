@@ -1,0 +1,22 @@
+service:
+  zookeeper:
+    enabled: true
+    running: true
+user:
+  kafka:
+    exists: true
+    uid: 1009
+    groups:
+    - kafka
+    home: /home/kafka
+port:
+  tcp:2181: # zookeeper
+    listening: true
+file:
+  /opt/jdk1.8.0_144:
+    exists: true
+    filetype: directory
+  /opt/jdk8/bin/java:
+    exists: true
+    mode: "0755"
+    filetype: file
