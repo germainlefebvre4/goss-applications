@@ -6,6 +6,10 @@ Goss files for Applicaitons Sanity Checks
 You generally store your applications gossfiles in `/var/goss/gossfiles/`.
 
 Runyour  sanity checks
-```goss --gossfile /var/goss/gossfiles/app.yaml validate -f documentation```
+```
+goss --gossfile /var/goss/gossfiles/app.yaml validate -f documentation
+```
 or
-```goss --gossfile /var/goss/gossfiles/app.yaml validate -f tap```
+```
+goss --gossfile /var/goss/gossfiles/app.yaml validate -f tap
+```
