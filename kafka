@@ -1,0 +1,40 @@
+service:
+  kafka:
+    enabled: true
+    running: true
+user:
+  {{ kafka_user }}:
+    exists: true
+    uid: 513
+    groups:
+    - {{ kafka_user }}
+    home: /home/kafka
+port:
+  tcp:9090: # kafka jmx
+    listening: true
+  tcp:9092: # kafka
+    listening: true
+file:
+  /opt/jdk-{{ java_version.9 }}:
+    exists: true
+    filetype: directory
+  /opt/jdk9/bin/java:
+    exists: true
+    mode: "0755"
+    filetype: file
+  /etc/security/limits.d/91-kafka.conf:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains: [/^kafka.*nofile.*128000/]
+  /etc/profile.d/kafka.sh:
+    exists: true
+    filetype: file
+    owner: {{ kafka_user }}
+    group: {{ kafka_user }}
+kernel-param:
+{% for key, value in kafka_sysctl_rules.iteritems() %}
+  {{ key }}:
+    value: '{{ value }}'
+{% endfor %}
