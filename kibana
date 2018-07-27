@@ -1,0 +1,20 @@
+port:
+  tcp:80:
+    listening: true
+  tcp:443:
+    listening: true
+  tcp:5601:
+    listening: true
+service:
+  kibana:
+    enabled: true
+    running: true
+file:
+  /etc/kibana/kibana.yml:
+    exists: true
+    contains:
+    - "server.port: 5601"
+  /etc/systemd/system/kibana.service:
+    exists: true
+    contains:
+    - "/^StandardOutput *= *null/"
