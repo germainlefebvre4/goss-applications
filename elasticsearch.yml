@@ -14,22 +14,20 @@ file:
   /etc/elasticsearch/jvm.options:
     exists: true
     contains:
-    - "/Xmx{{ (ansible_memtotal_mb / 2 ) | round(0,'common') | int }}m/"
-    - "/Xms{{ (ansible_memtotal_mb / 2 ) | round(0,'common') | int }}m/"
+    - "/Xmx2048m/"
+    - "/Xms2048m/"
   /etc/elasticsearch/elasticsearch.yml:
     exists: true
     contains:
-    - "node.name: {{ ansible_host | replace('a.','.') }}"
+    - "node.name: {{ ansible_hostname }}"
     - "bootstrap.memory_lock: false"
     - "network.host: 0.0.0.0"
-{% if groups['els-lightning'] is defined and inventory_hostname in groups['els-lightning'] %}
     - "cluster.name: {{ elasticsearch_cluster_name }}"
   /etc/httpd/conf.d/elasticsearch.conf:
     exists: true
     contains:
     - "Listen 9200"
     - '/^ *ProxyPass.*:{{ elasticsearch_port }}\/$/'
-{% endif %}
   /etc/logrotate.d/elasticsearch.conf:
     exists: true
 command:
@@ -37,7 +35,6 @@ command:
     exit-status: 0
     stdout:
       - "1.8.0"
-{% if groups['els-lightning'] is defined and inventory_hostname in groups['els-lightning'] %}
   "iptables -S":
     exit-status: 0
     stdout:
@@ -46,4 +43,3 @@ command:
     exit-status: 0
     stdout:
       - '/^([4-9][0-9]|\d{3})$/'
-{% endif %}
